@@ -1,21 +1,43 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React,{useState, useEffect, useRef} from 'react';
+import Toggle from './Toggle';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function App() {
+export default function Clock() {
+  const timerRef = useRef();
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    start();
+      return () => {
+        stop();
+      };
+  },[])
+
+  function start() {
+    const id = setInterval(() => {
+      setTime(new Date());
+    },1000);
+    timerRef.current = id;
+  }
+
+  function stop() {
+    clearInterval(timerRef.current);
+  }
+
   return (
     <View style={styles.container}>
-      <Text>STOPWATCH</Text>
-      <StatusBar style="auto" />
+      <Text>{time.toLocaleTimeString()}</Text>
+      <Toggle start={start} stop={stop}/>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: 50,
+    marginLeft: 10,
   },
+  field: {
+    marginBottom: 10,
+  }
 });
